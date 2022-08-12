@@ -15,6 +15,7 @@ function road (routes = []) {
     }
 
     function parse (path) {
+        if (!path) return
         for (const name in routesObj) {
             const route = routesObj[name]
             const result = route.match(path)
