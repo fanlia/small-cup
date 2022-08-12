@@ -49,12 +49,13 @@ function view (context, components = {}) {
 
     function load (doms = []) {
         doms.forEach(dom => {
-            if (!dom.name || !dom.node) return
-            const component = components[dom.name]
+            const { name, node } = dom
+            if (!name || !node) return
+            const component = components[name]
             if (!isFunction(component)) return
 
-            const node = dom.node
             const onload = () => component(node, context, render)
+
             onload()
 
             const onupdate = node.onupdate || nope
@@ -62,7 +63,7 @@ function view (context, components = {}) {
 
             onupdate()
 
-            elements.push({ onupdate, onunload })
+            elements.push({ name, onupdate, onunload })
         })
     }
 

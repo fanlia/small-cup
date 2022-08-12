@@ -22,6 +22,7 @@
     "path-to-regexp": "^6.2.1"
   },
   "devDependencies": {
+    "buffer": "^6.0.3",
     "echarts": "^5.3.3",
     "parcel": "^2.7.0"
   }
