@@ -7,12 +7,18 @@ const context = {
 
 const components = {
     counter: (el, ctx) => {
-        el.textContent = ctx.count
+        el.onupdate = () => {
+            el.textContent = ctx.count
+        }
     },
     inc: (el, ctx, render) => {
         el.onclick = () => {
             ctx.count++
             render()
+        }
+
+        el.onunload = () => {
+            console.log('unloaded')
         }
     },
 }

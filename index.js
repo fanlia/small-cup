@@ -56,8 +56,10 @@ function view (context, components = {}) {
             const onload = () => component(node, context, render)
             onload()
 
-            const onupdate = node.onupdate || onload
-            const onunload = node.unload || nope
+            const onupdate = node.onupdate || nope
+            const onunload = node.onunload || nope
+
+            onupdate()
 
             elements.push({ onupdate, onunload })
         })
@@ -128,6 +130,7 @@ export default function cup (options = {}) {
         context.$route = route
         context.$router = router
         context.$root = root
+        context.$render = render
 
         return serially(context, flow)
     }
