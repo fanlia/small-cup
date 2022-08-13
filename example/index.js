@@ -1,5 +1,5 @@
 
-import cup, { h } from './index.js'
+import cup, { h } from '../index.js'
 import xlsx2csv from '@ailnaf/xlsx2csv'
 
 const context = {
