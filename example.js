@@ -3,6 +3,7 @@ import cup, { h } from './index.js'
 
 const context = {
     count: 0,
+    items: ['1', '2', '3'],
 }
 
 const components = {
@@ -13,6 +14,7 @@ const components = {
     },
     inc: (el, ctx, render) => {
         el.onclick = () => {
+            ctx.items.unshift(ctx.items.pop())
             ctx.count++
             render()
         }
@@ -49,6 +51,8 @@ const components = {
         }
     },
     vnode: (el, ctx, render) => {
+        let ul
+
         h(el, {
             className: 'vnode',
             attributes: {
@@ -58,8 +62,17 @@ const components = {
             h("span", { style: { fontWeight: "bold" } }, "This is bold"),
             " and this is just normal text ",
             h("a", { href: "#/about" }, "go to about"),
-            h('input', { type: 'checkbox', checked: true, onclick: console.log })
+            h('input', { type: 'checkbox', checked: true, onclick: console.log }),
+            h('ul', {
+                onload: (node) => ul = node
+            }),
         ])
+
+        el.onupdate = () => {
+            h(ul, {}, [
+                h('ul', {}, ctx.items.map(item => h('li', {}, item)))
+            ])
+        }
     },
 }
 
