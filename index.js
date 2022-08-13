@@ -138,3 +138,26 @@ export default function cup (options = {}) {
     }
 }
 
+export function h(tag, props = {}, children) {
+    const node = typeof tag === 'string' ? document.createElement(tag) : tag
+
+    for (const key in props) {
+        const value = props[key]
+        if (value && typeof value === 'object') {
+            for (const nkey in value) {
+                node[key][nkey] = value[nkey]
+            }
+        } else {
+            node[key] = props[key]
+        }
+    }
+
+    children = Array.isArray(children) ? children : children ? [children] : []
+
+    for (let child of children) {
+        const childNode = typeof child === 'string' ? document.createTextNode(child) : child
+        node.appendChild(childNode)
+    }
+
+    return node
+}

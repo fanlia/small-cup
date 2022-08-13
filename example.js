@@ -1,5 +1,5 @@
 
-import cup from './index.js'
+import cup, { h } from './index.js'
 
 const context = {
     count: 0,
@@ -48,6 +48,17 @@ const components = {
             console.log('unloaded')
         }
     },
+    vnode: (el, ctx, render) => {
+        h(el, {
+            onclick: console.log,
+            className: 'vnode',
+        }, [
+            h("span", { style: { fontWeight: "bold" } }, "This is bold"),
+            " and this is just normal text",
+            h("a", { href: "/foo" }, "I'll take you places!"),
+            h('input', { type: 'checkbox', checked: true })
+        ])
+    },
 }
 
 const nav = `
@@ -62,6 +73,7 @@ const home = `
     <h1>home</h1>
     <p>count is <span component='counter'></span></p>
     <p><button component='inc'>+</button></p>
+    <div component='vnode'></div>
 `
 
 const about = `
