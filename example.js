@@ -153,6 +153,8 @@ const app = cup({
     routes,
 })
 
+window.context = context
+
 window.onhashchange = () => {
     const hash = window.location.hash.replace('#', '') || '/'
     app(hash)

@@ -15,14 +15,23 @@ function road (routes = []) {
     }
 
     function parse (path) {
-        if (!path) return
-        for (const name in routesObj) {
-            const route = routesObj[name]
-            const result = route.match(path)
-            if (result) {
-                return { ...route.route, params: result.params }
+        let result = {
+            route: {},
+            routeResult: {},
+        }
+
+        if (path) {
+            for (const name in routesObj) {
+                const { route, match } = routesObj[name]
+                const routeResult = match(path)
+                if (routeResult) {
+                    result = { route, routeResult }
+                    break
+                }
             }
         }
+
+        return result
     }
 
     function stringify (name, params) {
@@ -120,16 +129,16 @@ export default function cup (options = {}) {
     }
 
     return function app (path) {
-        const route = router.parse(path)
+        const { route, routeResult } = router.parse(path)
 
         const flow = [
-            route && route.before,
+            route.before,
             render,
-            route && route.after,
+            route.after,
             callback,
         ]
 
-        context.$route = route
+        context.$route = routeResult
         context.$router = router
         context.$root = root
         context.$render = render
