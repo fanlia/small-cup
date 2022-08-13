@@ -20,36 +20,6 @@ const components = {
             render()
         }
     },
-    echarts: (el, ctx, render) => {
-        const myChart = echarts.init(el)
-
-        const option = {
-            title: {
-                text: 'ECharts Getting Started Example'
-            },
-            tooltip: {},
-            legend: {
-                data: ['sales']
-            },
-            xAxis: {
-                data: ['Shirts', 'Cardigans', 'Chiffons', 'Pants', 'Heels', 'Socks']
-            },
-            yAxis: {},
-            series: [
-                {
-                    name: 'sales',
-                    type: 'bar',
-                    data: [5, 20, 36, 10, 10, 20]
-                }
-            ]
-        }
-
-        myChart.setOption(option)
-
-        el.onunload = () => {
-            myChart.dispose()
-        }
-    },
     vnode: (el, ctx, render) => {
         let ul
 
@@ -119,13 +89,12 @@ const home = `
     <p>count is <span component='counter'></span></p>
     <p><button component='inc'>+</button></p>
     <div component='vnode'></div>
-    <div component='xlsx2csv'></div>
 `
 
 const about = `
     ${nav}
     <h1>about</h1>
-    <div component='echarts' style='width: 100%;height:400px;'></div>
+    <div component='xlsx2csv'></div>
 `
 
 const routes = [
@@ -141,7 +110,6 @@ const routes = [
         path: '/about',
         before: async (ctx) => {
             ctx.$root.innerHTML = about
-            window.echarts = await import('echarts')
         },
     },
 ]
