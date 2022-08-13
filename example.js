@@ -1,5 +1,6 @@
 
 import cup, { h } from './index.js'
+import xlsx2csv from '@ailnaf/xlsx2csv'
 
 const context = {
     count: 0,
@@ -74,6 +75,35 @@ const components = {
             ])
         }
     },
+    xlsx2csv: (el, ctx, render) => {
+        let tbody
+
+        let max = 100
+
+        const onchange = async (e) => {
+            const file = e.target.files[0]
+
+            let data = []
+            await xlsx2csv(file, (row) => {
+                data.push(row)
+            }, { sheet: { max } })
+
+            h(tbody, {}, data.map((row, i) => {
+                return h('tr', {}, row.map((col, j) => {
+                    if (i === 0) return h('th', {}, col)
+                    return h('td', {}, col)
+                }))
+            }))
+        }
+
+        h(el, {}, [
+            h('input', { type: 'number', step: 100, onchange: e => max = e.target.value, value: max }),
+            h('input', { type: 'file', accept: '.xlsx', onchange }),
+            h('table', {}, [
+                h('tbody', { onload: node => tbody = node })
+            ]),
+        ])
+    },
 }
 
 const nav = `
@@ -89,6 +119,7 @@ const home = `
     <p>count is <span component='counter'></span></p>
     <p><button component='inc'>+</button></p>
     <div component='vnode'></div>
+    <div component='xlsx2csv'></div>
 `
 
 const about = `

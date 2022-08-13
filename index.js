@@ -170,7 +170,8 @@ export function h (tag, props = {}, children) {
     children = Array.isArray(children) ? children : children ? [children] : []
 
     for (let child of children) {
-        const childNode = typeof child === 'string' ? document.createTextNode(child) : child
+        if (!child) continue
+        const childNode = typeof child === 'object' ? child :  document.createTextNode(String(child))
         node.appendChild(childNode)
         if (isFunction(childNode.onload)) {
             childNode.onload(childNode)
