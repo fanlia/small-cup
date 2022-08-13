@@ -48,7 +48,6 @@ const components = {
 
         el.onunload = () => {
             myChart.dispose()
-            console.log('unloaded')
         }
     },
     vnode: (el, ctx, render) => {
