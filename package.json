@@ -5,7 +5,11 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "build": "parcel build example/index.html",
     "start": "parcel example/index.html"
+  },
+  "targets": {
+    "main": false
   },
   "repository": {
     "type": "git",
