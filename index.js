@@ -143,7 +143,13 @@ export function h(tag, props = {}, children) {
 
     for (const key in props) {
         const value = props[key]
-        if (value && typeof value === 'object') {
+        if (key === 'attributes') {
+            if (value && typeof value === 'object') {
+                for (const attr in value) {
+                    node.setAttribute(attr, value[attr])
+                }
+            }
+        } else if (value && typeof value === 'object') {
             for (const nkey in value) {
                 node[key][nkey] = value[nkey]
             }

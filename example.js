@@ -51,6 +51,9 @@ const components = {
     vnode: (el, ctx, render) => {
         h(el, {
             className: 'vnode',
+            attributes: {
+                'data-id': '1',
+            },
         }, [
             h("span", { style: { fontWeight: "bold" } }, "This is bold"),
             " and this is just normal text ",
