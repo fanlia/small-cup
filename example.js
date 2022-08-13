@@ -50,13 +50,12 @@ const components = {
     },
     vnode: (el, ctx, render) => {
         h(el, {
-            onclick: console.log,
             className: 'vnode',
         }, [
             h("span", { style: { fontWeight: "bold" } }, "This is bold"),
-            " and this is just normal text",
-            h("a", { href: "/foo" }, "I'll take you places!"),
-            h('input', { type: 'checkbox', checked: true })
+            " and this is just normal text ",
+            h("a", { href: "#/about" }, "go to about"),
+            h('input', { type: 'checkbox', checked: true, onclick: console.log })
         ])
     },
 }
