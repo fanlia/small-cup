@@ -1,4 +1,8 @@
 
+if (module.hot) {
+    module.hot.accept()
+}
+
 import cup, { h } from '../index.js'
 import xlsx2csv from '@ailnaf/xlsx2csv'
 
@@ -87,7 +91,7 @@ const home = `
     ${nav}
     <h1>home</h1>
     <p>count is <span component='counter'></span></p>
-    <p><button component='inc'>+</button></p>
+    <p><button component='inc'>++</button></p>
     <div component='vnode'></div>
 `
 
