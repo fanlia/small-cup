@@ -40,6 +40,10 @@ const components = {
             h('ul', {
                 onload: (node) => ul = node
             }),
+            h('<>', {}, [
+                h("p", {}, 'abc'),
+                h("p", {}, 'efg'),
+            ])
         ])
 
         el.onupdate = () => {

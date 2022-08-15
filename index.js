@@ -153,7 +153,7 @@ export function h (tag, props = {}, children) {
     let node
 
     if (typeof tag === 'string') {
-        node = document.createElement(tag)
+        node = tag === '<>' ? document.createDocumentFragment() : document.createElement(tag)
     } else {
         node = tag
         node.innerHTML = ''
