@@ -187,20 +187,13 @@ export function h (tag, props = {}, children) {
     return node
 }
 
-let navigateCallback = null
-
-export function onpathnamechange (callback) {
-    navigateCallback = callback
-    if (navigateCallback) navigateCallback(location.pathname)
-}
-
 export function navigate (path, replace = false) {
     if (replace) {
         history.replaceState(null, null, path)
     } else {
         history.pushState(null, null, path)
     }
-    if (navigateCallback) navigateCallback(path)
+    dispatchEvent(new Event('popstate'))
 }
 
 function clicka (e) {
