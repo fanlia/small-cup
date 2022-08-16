@@ -129,8 +129,6 @@ export default function cup (options = {}) {
     return function app (path) {
         const { route, routeResult } = router.parse(path)
 
-        console.log({route, path})
-
         const flow = [
             route.before,
             render,
