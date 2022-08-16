@@ -3,7 +3,7 @@ if (module.hot) {
     module.hot.accept()
 }
 
-import cup, { h } from '../index.js'
+import cup, { h, a, link, onpathnamechange } from '../index.js'
 import xlsx2csv from '@ailnaf/xlsx2csv'
 
 const context = {
@@ -12,6 +12,7 @@ const context = {
 }
 
 const components = {
+    a,
     counter: (el, ctx) => {
         el.onupdate = () => {
             el.textContent = ctx.count
@@ -35,7 +36,7 @@ const components = {
         }, [
             h("span", { style: { fontWeight: "bold" } }, "This is bold"),
             " and this is just normal text ",
-            h("a", { href: "#/about" }, "go to about"),
+            link({ href: "/about" }, "go to about"),
             h('input', { type: 'checkbox', checked: true, onclick: console.log }),
             h('ul', {
                 onload: (node) => ul = node
@@ -86,8 +87,8 @@ const components = {
 
 const nav = `
 <p>
-<a href='#/'>home</a>
-<a href='#/about'>abount</a>
+<a href='/' component='a'>home</a>
+<a href='/about' component='a'>abount</a>
 </p>
 `
 
@@ -130,9 +131,6 @@ const app = cup({
 
 window.context = context
 
-window.onhashchange = () => {
-    const hash = window.location.hash.replace('#', '') || '/'
-    app(hash)
-}
+onpathnamechange(app)
 
-window.onhashchange()
+

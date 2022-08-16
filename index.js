@@ -129,6 +129,8 @@ export default function cup (options = {}) {
     return function app (path) {
         const { route, routeResult } = router.parse(path)
 
+        console.log({route, path})
+
         const flow = [
             route.before,
             render,
@@ -185,5 +187,37 @@ export function h (tag, props = {}, children) {
     }
 
     return node
+}
+
+let navigateCallback = null
+
+export function onpathnamechange (callback) {
+    navigateCallback = callback
+    if (navigateCallback) navigateCallback(location.pathname)
+}
+
+export function navigate (path, replace = false) {
+    if (replace) {
+        history.replaceState(null, null, path)
+    } else {
+        history.pushState(null, null, path)
+    }
+    if (navigateCallback) navigateCallback(path)
+}
+
+function clicka (e) {
+    e.preventDefault()
+    navigate(e.target.pathname)
+}
+
+export function a (el) {
+    el.onclick = clicka
+}
+
+export function link (props = {}, children) {
+    return h('a', {
+        ...props,
+        onclick: clicka,
+    }, children)
 }
 
