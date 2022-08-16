@@ -72,7 +72,7 @@ function view (context, components = {}) {
 
             onupdate()
 
-            elements.push({ name, onupdate, onunload })
+            elements.push({ onupdate, onunload })
         })
     }
 
@@ -97,12 +97,10 @@ function view (context, components = {}) {
 }
 
 async function serially (context, steps = []) {
-    let data
     for (const step of steps) {
         if (!isFunction(step)) continue
-        data = await step(context)
+        await step(context)
     }
-    return data
 }
 
 export default function cup (options = {}) {
@@ -141,7 +139,6 @@ export default function cup (options = {}) {
         context.$route = routeResult
         context.$router = router
         context.$root = root
-        context.$render = render
 
         return serially(context, flow)
     }
