@@ -11,6 +11,16 @@ const context = {
     items: ['1', '2', '3'],
 }
 
+function UL (props) {
+    const ul = h('ul', props)
+
+    ul.onupdate = (items) => {
+        h(ul, {}, items.map(item => h('li', {}, item)))
+    }
+
+    return ul
+}
+
 const components = {
     a,
     counter: (el, ctx) => {
@@ -38,7 +48,7 @@ const components = {
             " and this is just normal text ",
             link({ href: "/about" }, "go to about"),
             h('input', { type: 'checkbox', checked: true, onclick: console.log }),
-            h('ul', {
+            UL({
                 onload: (node) => ul = node
             }),
             h('<>', {}, [
@@ -48,7 +58,7 @@ const components = {
         ])
 
         el.onupdate = () => {
-            h(ul, {}, ctx.items.map(item => h('li', {}, item)))
+            ul.onupdate(ctx.items)
         }
     },
     xlsx2csv: (el, ctx, render) => {
