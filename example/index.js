@@ -48,9 +48,7 @@ const components = {
         ])
 
         el.onupdate = () => {
-            h(ul, {}, [
-                h('ul', {}, ctx.items.map(item => h('li', {}, item)))
-            ])
+            h(ul, {}, ctx.items.map(item => h('li', {}, item)))
         }
     },
     xlsx2csv: (el, ctx, render) => {
