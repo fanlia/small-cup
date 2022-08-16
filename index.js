@@ -198,7 +198,7 @@ export function navigate (path, replace = false) {
 
 function clicka (e) {
     e.preventDefault()
-    navigate(e.target.pathname)
+    navigate(e.target.href)
 }
 
 export function a (el) {
