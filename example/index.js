@@ -3,7 +3,7 @@ if (module.hot) {
     module.hot.accept()
 }
 
-import cup, { h, a, link } from '../index.js'
+import cup, { h, a, link, onpathname } from '../index.js'
 import xlsx2csv from '@ailnaf/xlsx2csv'
 
 const context = {
@@ -127,8 +127,4 @@ const app = cup({
 
 window.context = context
 
-window.onpopstate = () => {
-    app(location.pathname)
-}
-
-window.onpopstate()
+onpathname(app)

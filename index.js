@@ -209,3 +209,9 @@ export function link (props = {}, children) {
     }, children)
 }
 
+export function onpathname (app) {
+    window.onpopstate = () => {
+        app(location.pathname)
+    }
+    window.onpopstate()
+}
