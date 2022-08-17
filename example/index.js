@@ -26,7 +26,7 @@ const components = {
         }
     },
     vnode: (el, ctx, render) => {
-        let ul
+        let ul = h('ul')
 
         h(el, {
             className: 'vnode',
@@ -38,9 +38,7 @@ const components = {
             " and this is just normal text ",
             link({ href: "/about" }, "go to about"),
             h('input', { type: 'checkbox', checked: true, onclick: console.log }),
-            h('ul', {
-                onload: (node) => ul = node
-            }),
+            ul,
             h('<>', {}, [
                 h("p", {}, 'abc'),
                 h("p", {}, 'efg'),

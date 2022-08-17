@@ -179,9 +179,6 @@ export function h (tag, props = {}, children) {
         if (!child) continue
         const childNode = typeof child === 'object' ? child :  document.createTextNode(String(child))
         node.appendChild(childNode)
-        if (isFunction(childNode.onload)) {
-            childNode.onload(childNode)
-        }
     }
 
     return node
