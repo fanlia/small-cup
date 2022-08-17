@@ -50,7 +50,7 @@ const components = {
         }
     },
     xlsx2csv: (el, ctx, render) => {
-        let tbody
+        let tbody = h('tbody')
 
         let max = 100
 
@@ -75,7 +75,7 @@ const components = {
             h('input', { type: 'number', step: 100, onchange: e => max = e.target.value, value: max }),
             h('input', { type: 'file', accept: '.xlsx', onchange }),
             h('table', {}, [
-                h('tbody', { onload: node => tbody = node })
+                tbody,
             ]),
         ])
     },
