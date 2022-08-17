@@ -112,7 +112,7 @@ export default function cup (options = {}) {
         callback,
     } = options
 
-    const router = road(routes)
+    const { parse, stringify } = road(routes)
 
     const root = doc.querySelector('[app]') || doc.body
     const attr = 'component'
@@ -127,7 +127,7 @@ export default function cup (options = {}) {
     }
 
     return function app (path) {
-        const { route, routeResult } = router.parse(path)
+        const { route, routeResult } = parse(path)
 
         const flow = [
             route.before,
@@ -137,7 +137,7 @@ export default function cup (options = {}) {
         ]
 
         context.$route = routeResult
-        context.$router = router
+        context.$router = stringify
         context.$root = root
 
         return serially(context, flow)
