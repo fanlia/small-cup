@@ -71,7 +71,7 @@ const routes = [
     {
         name: 'home',
         path: '/',
-        before: (ctx) => {
+        before: async (ctx) => {
             ctx.$root.innerHTML = home
         },
     },
