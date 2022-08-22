@@ -51,6 +51,10 @@ const components = {
             el.textContent = ctx.count
         }
 
+        el.onunload = () => {
+            console.log('unloaded')
+        }
+
         el.onclick = () => {
             ctx.count++
             render()
