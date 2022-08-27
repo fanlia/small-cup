@@ -91,7 +91,7 @@ const components = {
 const nav = `
 <p>
 <a href='/' component='a'>home</a>
-<a href='/about' component='a'>abount</a>
+<a href='/about' component='a'>about</a>
 </p>
 `
 
