@@ -3,6 +3,9 @@ if (module.hot) {
     module.hot.accept()
 }
 
+import 'bootstrap/dist/css/bootstrap.css'
+import * as bootstrap from 'bootstrap'
+
 import cup, { h, a, link, onpathname } from '../index.js'
 import xlsx2csv from '@ailnaf/xlsx2csv'
 
@@ -74,7 +77,9 @@ const components = {
             h('h2', {}, 'xlsx2csv'),
             h('input', { type: 'number', step: 100, onchange: e => max = e.target.value, value: max }),
             h('input', { type: 'file', accept: '.xlsx', onchange }),
-            h('table', {}, [
+            h('table', {
+                className: 'table',
+            }, [
                 tbody,
             ]),
         ])
@@ -92,7 +97,7 @@ const home = `
     ${nav}
     <h1>home</h1>
     <p>count is <span component='counter'></span></p>
-    <p><button component='inc'>++</button></p>
+    <p><button component='inc' class='btn btn-primary'>++</button></p>
     <div component='vnode'></div>
 `
 
