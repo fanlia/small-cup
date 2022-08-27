@@ -12,7 +12,7 @@ npm start
 - context
 - components
 - routes
-- bootstrap
+- onpathname
 
 ## Usage
 
