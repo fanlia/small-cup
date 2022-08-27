@@ -77,11 +77,13 @@ const components = {
             h('h2', {}, 'xlsx2csv'),
             h('input', { type: 'number', step: 100, onchange: e => max = e.target.value, value: max }),
             h('input', { type: 'file', accept: '.xlsx', onchange }),
-            h('table', {
-                className: 'table',
-            }, [
-                tbody,
-            ]),
+            h('div', { className: 'table-responsive' }, [
+                h('table', {
+                    className: 'table',
+                }, [
+                    tbody,
+                ]),
+            ])
         ])
     },
 }
