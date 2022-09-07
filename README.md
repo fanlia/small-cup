@@ -1,7 +1,15 @@
 # small-cup
 a small javascript front end framework
 
-## Demo
+## Getting started
+
+```sh
+mkdir myapp
+cd myapp
+npm init small-cup@latest
+```
+
+## Develop
 
 ```
 npm start
