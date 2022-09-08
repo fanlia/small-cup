@@ -90,8 +90,8 @@ const components = {
 
 const nav = `
 <p>
-<a href='/' component='a'>home</a>
-<a href='/about' component='a'>about</a>
+<a href='/' component='a' data-active-route-class='link-danger'>home</a>
+<a href='/about' component='a' data-active-route-class='link-danger'>about</a>
 </p>
 `
 

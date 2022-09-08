@@ -195,8 +195,12 @@ function clicka (e) {
     navigate(e.target.href)
 }
 
-export function a (el) {
+export function a (el, ctx) {
     el.onclick = clicka
+    const activeRouteClass = el.dataset.activeRouteClass
+    if (activeRouteClass && el.pathname === ctx.$route.path) {
+        el.classList.add(activeRouteClass)
+    }
 }
 
 export function link (props = {}, children) {
