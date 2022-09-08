@@ -5,12 +5,11 @@ function road (routes = []) {
 
     const routesObj = {}
 
-    for (const route of routes) {
-        if (!route.name || !route.path) continue
-        routesObj[route.name] = {
-            match: match(route.path, { decode: decodeURIComponent }),
-            compile: compile(route.path, { encode: encodeURIComponent }),
-            route,
+    for (const { name, path } of routes) {
+        if (!name || !path) continue
+        routesObj[name] = {
+            match: match(path, { decode: decodeURIComponent }),
+            compile: compile(path, { encode: encodeURIComponent }),
         }
     }
 
@@ -21,9 +20,9 @@ function road (routes = []) {
         }
 
         if (path) {
-            for (const name in routesObj) {
-                const { route, match } = routesObj[name]
-                const routeResult = match(path)
+            for (const route of routes) {
+                const ro = routesObj[route.name]
+                const routeResult = ro && ro.match(path)
                 if (routeResult) {
                     result = { route, routeResult }
                     break
@@ -35,8 +34,8 @@ function road (routes = []) {
     }
 
     function stringify (name, params) {
-        const route = routesObj[name]
-        return route && route.compile(params)
+        const ro = routesObj[name]
+        return ro && ro.compile(params)
     }
 
     return { parse, stringify }
@@ -109,7 +108,6 @@ export default function cup (options = {}) {
         components,
         routes,
         doc = document,
-        callback,
     } = options
 
     const { parse, stringify } = road(routes)
@@ -133,7 +131,6 @@ export default function cup (options = {}) {
             route.before,
             render,
             route.after,
-            callback,
         ]
 
         context.$route = routeResult
