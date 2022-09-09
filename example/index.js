@@ -53,7 +53,11 @@ const components = {
         }
     },
     xlsx2csv: (el, ctx, render) => {
-        let tbody = h('tbody')
+        let tbody = h('tbody', {
+            style: {
+                tableLayout: 'fixed',
+            }
+        })
 
         let max = 100
 
@@ -65,10 +69,16 @@ const components = {
                 data.push(row)
             }, { sheet: { max } })
 
+            const cellStyle = {
+                overflow: 'hidden',
+                whiteSpace: 'nowrap',
+                textOverflow: 'ellipsis',
+            }
+
             h(tbody, {}, data.map((row, i) => {
                 return h('tr', {}, row.map((col, j) => {
-                    if (i === 0) return h('th', {}, col)
-                    return h('td', {}, col)
+                    if (i === 0) return h('th', { style: cellStyle }, col)
+                    return h('td', { style: cellStyle }, col)
                 }))
             }))
         }
@@ -79,7 +89,7 @@ const components = {
             h('input', { type: 'file', accept: '.xlsx', onchange }),
             h('div', { className: 'table-responsive' }, [
                 h('table', {
-                    className: 'table',
+                    className: 'table table-hover',
                 }, [
                     tbody,
                 ]),
