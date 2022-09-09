@@ -53,11 +53,7 @@ const components = {
         }
     },
     xlsx2csv: (el, ctx, render) => {
-        let tbody = h('tbody', {
-            style: {
-                tableLayout: 'fixed',
-            }
-        })
+        let tbody = h('tbody')
 
         let max = 100
 
@@ -77,8 +73,8 @@ const components = {
 
             h(tbody, {}, data.map((row, i) => {
                 return h('tr', {}, row.map((col, j) => {
-                    if (i === 0) return h('th', { style: cellStyle }, col)
-                    return h('td', { style: cellStyle }, col)
+                    if (i === 0) return h('th', { style: cellStyle, attributes: { title: col } }, col)
+                    return h('td', { style: cellStyle, attributes: { title: col } }, col)
                 }))
             }))
         }
@@ -90,6 +86,9 @@ const components = {
             h('div', { className: 'table-responsive' }, [
                 h('table', {
                     className: 'table table-hover',
+                    style: {
+                        tableLayout: 'fixed',
+                    }
                 }, [
                     tbody,
                 ]),
