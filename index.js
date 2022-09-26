@@ -195,10 +195,15 @@ function clicka (e) {
     navigate(e.target.href)
 }
 
+function normalizePathname (pathname = '/') {
+    return pathname.replace(/^(#\/|#|\/)?/, '/')
+}
+
 export function a (el, ctx) {
     el.onclick = clicka
     const activeRouteClass = el.dataset.activeRouteClass
-    if (activeRouteClass && el.pathname === ctx.$route.path) {
+    const pathname = normalizePathname(el.getAttribute('href'))
+    if (activeRouteClass && pathname === ctx.$route.path) {
         el.classList.add(activeRouteClass)
     }
 }
@@ -210,9 +215,11 @@ export function link (props = {}, children) {
     }, children)
 }
 
-export function onpathname (app) {
+export function onpathname (app, options = {}) {
+    const routeType = options.routeType || 'pathname'
     onpopstate = () => {
-        app(location.pathname)
+        const pathname = normalizePathname(location[routeType])
+        app(pathname)
     }
     onpopstate()
 }
