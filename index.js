@@ -192,6 +192,7 @@ export function navigate (path, replace = false) {
 
 function clicka (e) {
     e.preventDefault()
+    if (e.target.href === location.href) return
     navigate(e.target.href)
 }
 
@@ -199,7 +200,16 @@ function normalizePathname (pathname = '/') {
     return pathname.replace(/^(#\/|#|\/)?/, '/')
 }
 
+let routeType
+
+function getHref (href = '') {
+    return routeType === 'hash' && href[0] === '/' ? `#${href}` : href
+}
+
 export function a (el, ctx) {
+
+    el.setAttribute('href', getHref(el.getAttribute('href')))
+
     el.onclick = clicka
     const activeRouteClass = el.dataset.activeRouteClass
     const pathname = normalizePathname(el.getAttribute('href'))
@@ -211,12 +221,13 @@ export function a (el, ctx) {
 export function link (props = {}, children) {
     return h('a', {
         ...props,
+        href: getHref(props.href),
         onclick: clicka,
     }, children)
 }
 
 export function onpathname (app, options = {}) {
-    const routeType = options.routeType || 'pathname'
+    routeType = options.routeType || 'pathname'
     onpopstate = () => {
         const pathname = normalizePathname(location[routeType])
         app(pathname)
