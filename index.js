@@ -124,12 +124,14 @@ export default function cup (options = {}) {
         viewer.reset(doms)
     }
 
-    return function app (path) {
+    return function app (path, appOptions = {}) {
         const { route, routeResult } = parse(path)
 
         const flow = [
             route.before,
+            appOptions.before,
             render,
+            appOptions.after,
             route.after,
         ]
 
@@ -141,13 +143,31 @@ export default function cup (options = {}) {
     }
 }
 
+let hNodes = []
+
+const hBefore = () => {
+    hNodes.forEach(node => node.onunload())
+    hNodes = []
+}
+
+const hAfter = () => {
+    hNodes.forEach(node => node.onload())
+}
+
 export function h (tag, props = {}, children) {
     if (!tag) return
 
     let node
 
+    let isNew = false
+
     if (typeof tag === 'string') {
-        node = tag === '<>' ? document.createDocumentFragment() : document.createElement(tag)
+        if (tag === '<>') {
+            node = document.createDocumentFragment()
+        } else {
+            node = document.createElement(tag)
+            isNew = true
+        }
     } else {
         node = tag
         node.innerHTML = ''
@@ -176,6 +196,11 @@ export function h (tag, props = {}, children) {
         if (!child) continue
         const childNode = typeof child === 'object' ? child :  document.createTextNode(String(child))
         node.appendChild(childNode)
+    }
+
+    if (isNew && isFunction(node.onload)) {
+        node.onunload = node.onunload || nope
+        hNodes.push(node)
     }
 
     return node
@@ -228,9 +253,14 @@ export function link (props = {}, children) {
 
 export function onpathname (app, options = {}) {
     routeType = options.routeType || 'pathname'
+    const appOptions = {
+        before: hBefore,
+        after: hAfter,
+    }
+
     onpopstate = () => {
         const pathname = normalizePathname(location[routeType])
-        app(pathname)
+        app(pathname, appOptions)
     }
     onpopstate()
 }

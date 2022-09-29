@@ -14,6 +14,22 @@ const context = {
     items: ['1', '2', '3'],
 }
 
+const button = (props = {}, children) => {
+
+    const onunload = () => {
+        console.log('unloaded button')
+    }
+
+    const onload = () => {
+        console.log('loaded button')
+    }
+
+    return h('button', {
+        onunload,
+        onload,
+    }, children)
+}
+
 const components = {
     a,
     counter: (el, ctx) => {
@@ -45,12 +61,14 @@ const components = {
             h('<>', {}, [
                 h("p", {}, 'abc'),
                 h("p", {}, 'efg'),
-            ])
+            ]),
+            button({}, 'button'),
         ])
 
         el.onupdate = () => {
             h(ul, {}, ctx.items.map(item => h('li', {}, item)))
         }
+
     },
     xlsx2csv: (el, ctx, render) => {
         let tbody = h('tbody')
