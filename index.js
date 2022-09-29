@@ -146,12 +146,12 @@ export default function cup (options = {}) {
 let hNodes = []
 
 const hBefore = () => {
-    hNodes.forEach(node => node.onunload())
+    hNodes.forEach(node => node.onunload(node))
     hNodes = []
 }
 
 const hAfter = () => {
-    hNodes.forEach(node => node.onload())
+    hNodes.forEach(node => node.onload(node))
 }
 
 export function h (tag, props = {}, children) {
