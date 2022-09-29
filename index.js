@@ -198,7 +198,8 @@ export function h (tag, props = {}, children) {
         node.appendChild(childNode)
     }
 
-    if (isNew && isFunction(node.onload)) {
+    if (isNew && (isFunction(node.onload) || isFunction(node.onunload))) {
+        node.onload = node.onload || nope
         node.onunload = node.onunload || nope
         hNodes.push(node)
     }
