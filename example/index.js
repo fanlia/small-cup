@@ -25,6 +25,7 @@ const button = (props = {}, children) => {
     }
 
     return h('button', {
+        ...props,
         onunload,
         onload,
     }, children)
@@ -62,7 +63,7 @@ const components = {
                 h("p", {}, 'abc'),
                 h("p", {}, 'efg'),
             ]),
-            button({}, 'button'),
+            button({ className: 'btn btn-primary' }, 'button'),
         ])
 
         el.onupdate = () => {
