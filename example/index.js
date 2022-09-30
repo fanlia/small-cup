@@ -162,4 +162,6 @@ const app = cup({
 
 window.context = context
 
-onpathname(app)
+onpathname(app, {
+    // routeType: 'hash',
+})
