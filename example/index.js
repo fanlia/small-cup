@@ -20,7 +20,7 @@ const button = (props = {}, children) => {
         console.log('unloaded button')
     }
 
-    const onload = () => {
+    const onload = (el) => {
         console.log('loaded button')
     }
 
