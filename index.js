@@ -178,6 +178,8 @@ export function h (tag, props = {}, children) {
         }
     }
 
+    node.is_h = true
+
     if (node.loaded) {
         hUnload(node)
         node.innerHTML = ''
@@ -201,7 +203,7 @@ export function h (tag, props = {}, children) {
 const hTranverseAfter = (node, fn) => {
     if (node.nodeType !== 1) return
     for (let child of node.childNodes) {
-        if (child.nodeType !== 1) continue
+        if (child.nodeType !== 1 || !child.is_h) continue
         hTranverseAfter(child, fn)
         fn(child)
     }
@@ -210,7 +212,7 @@ const hTranverseAfter = (node, fn) => {
 const hTranverseBefore = (node, fn) => {
     if (node.nodeType !== 1) return
     for (let child of node.childNodes) {
-        if (child.nodeType !== 1) continue
+        if (child.nodeType !== 1 || !child.is_h) continue
         fn(child)
         hTranverseBefore(child, fn)
     }
