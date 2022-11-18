@@ -67,11 +67,16 @@ function view (context, components = {}) {
             onload()
 
             const onupdate = node.onupdate || nope
-            const onunload = node.onunload || nope
+            const _onunload = node.onunload || nope
+            const onunload = () => {
+                hUnload(node)
+                _onunload()
+            }
 
             onupdate()
 
             elements.push({ onupdate, onunload })
+            hLoad(node)
         })
     }
 
@@ -124,14 +129,12 @@ export default function cup (options = {}) {
         viewer.reset(doms)
     }
 
-    return function app (path, appOptions = {}) {
+    return function app (path) {
         const { route, routeResult } = parse(path)
 
         const flow = [
             route.before,
-            appOptions.before,
             render,
-            appOptions.after,
             route.after,
         ]
 
@@ -143,34 +146,19 @@ export default function cup (options = {}) {
     }
 }
 
-let hNodes = []
-
-const hBefore = () => {
-    hNodes.forEach(node => node.onunload(node))
-    hNodes = []
-}
-
-const hAfter = () => {
-    hNodes.forEach(node => node.onload(node))
-}
-
 export function h (tag, props = {}, children) {
     if (!tag) return
 
     let node
-
-    let isNew = false
 
     if (typeof tag === 'string') {
         if (tag === '<>') {
             node = document.createDocumentFragment()
         } else {
             node = document.createElement(tag)
-            isNew = true
         }
     } else {
         node = tag
-        node.innerHTML = ''
     }
 
     for (const key in props) {
@@ -190,6 +178,11 @@ export function h (tag, props = {}, children) {
         }
     }
 
+    if (node.loaded) {
+        hUnload(node)
+        node.innerHTML = ''
+    }
+
     children = Array.isArray(children) ? children : children ? [children] : []
 
     for (let child of children) {
@@ -198,13 +191,45 @@ export function h (tag, props = {}, children) {
         node.appendChild(childNode)
     }
 
-    if (isNew && (isFunction(node.onload) || isFunction(node.onunload))) {
-        node.onload = node.onload || nope
-        node.onunload = node.onunload || nope
-        hNodes.push(node)
+    if (node.loaded) {
+        hLoad(node)
     }
 
     return node
+}
+
+const hTranverseAfter = (node, fn) => {
+    if (node.nodeType !== 1) return
+    for (let child of node.childNodes) {
+        if (child.nodeType !== 1) continue
+        hTranverseAfter(child, fn)
+        fn(child)
+    }
+}
+
+const hTranverseBefore = (node, fn) => {
+    if (node.nodeType !== 1) return
+    for (let child of node.childNodes) {
+        if (child.nodeType !== 1) continue
+        fn(child)
+        hTranverseBefore(child, fn)
+    }
+}
+
+const hUnload = (parentNode) => {
+    hTranverseAfter(parentNode, node => {
+        node.loaded = false
+        if (!isFunction(node.onunload)) return
+        node.onunload(node)
+    })
+}
+
+const hLoad = (parentNode) => {
+    hTranverseBefore(parentNode, node => {
+        node.loaded = true
+        if (!isFunction(node.onload)) return
+        node.onload(node)
+    })
 }
 
 export function navigate (path, replace = false) {
@@ -254,14 +279,10 @@ export function link (props = {}, children) {
 
 export function onpathname (app, options = {}) {
     routeType = options.routeType || 'pathname'
-    const appOptions = {
-        before: hBefore,
-        after: hAfter,
-    }
 
     onpopstate = () => {
         const pathname = normalizePathname(location[routeType])
-        app(pathname, appOptions)
+        app(pathname)
     }
     onpopstate()
 }
