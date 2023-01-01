@@ -9,6 +9,8 @@ cd myapp
 npm init small-cup@latest
 ```
 
+[demo](https://codepen.io/fanlia/pen/QWBEEwJ)
+
 ## Develop
 
 ```
