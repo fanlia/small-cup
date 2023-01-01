@@ -24,6 +24,17 @@ npm start
 
 ## Usage
 
+### cdn
+
+```html
+<script src="https://unpkg.com/small-cup/smallcup.min.js"></script>
+<script>
+    const { cup, onpathname } = smallcup
+</script>
+```
+
+### esm
+
 ```sh
 npm i small-cup
 ```
