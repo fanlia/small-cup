@@ -6,18 +6,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>small cup demo</title>
     <script src="smallcup.min.js"></script>
+    <style>
+        .route-active {
+            color: red;
+        }
+    </style>
   </head>
   <body>
     <div app></div>
     <script>
 
-const { cup, onpathname } = smallcup
+const { cup, a, onpathname } = smallcup
 
 const context = {
     count: 0,
 }
 
 const components = {
+    a,
     counter: (el, ctx, render) => {
         el.onupdate = () => {
             el.textContent = ctx.count
@@ -34,9 +40,22 @@ const components = {
     },
 }
 
+const nav = `
+<p>
+<a href='/' component='a' data-active-route-class='route-active'>home</a>
+<a href='/about' component='a' data-active-route-class='route-active'>about</a>
+</p>
+`
+
 const home = `
+    ${nav}
     <h1>home</h1>
     <p>count is <button component='counter'></button></p>
+`
+
+const about = `
+    ${nav}
+    <h1>about</h1>
 `
 
 const routes = [
@@ -45,6 +64,13 @@ const routes = [
         path: '/',
         before: async (ctx) => {
             ctx.$root.innerHTML = home
+        },
+    },
+    {
+        name: 'about',
+        path: '/about',
+        before: async (ctx) => {
+            ctx.$root.innerHTML = about
         },
     },
 ]
@@ -56,6 +82,7 @@ const app = cup({
 })
 
 onpathname(app)
+
     </script>
   </body>
 </html>
