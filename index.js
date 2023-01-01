@@ -107,7 +107,7 @@ async function serially (context, steps = []) {
     }
 }
 
-export default function cup (options = {}) {
+export function cup (options = {}) {
     const {
         context,
         components,
@@ -280,7 +280,7 @@ export function link (props = {}, children) {
 }
 
 export function onpathname (app, options = {}) {
-    routeType = options.routeType || 'pathname'
+    routeType = options.routeType || 'hash'
 
     onpopstate = () => {
         const pathname = normalizePathname(location[routeType])

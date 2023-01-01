@@ -1,53 +1,17 @@
-# small-cup
-a small javascript front end framework
 
-## Getting started
-
-```sh
-mkdir myapp
-cd myapp
-npm init small-cup@latest
-```
-
-## Develop
-
-```
-npm start
-```
-
-## Core
-
-- context
-- components
-- routes
-- onpathname
-
-## Usage
-
-```sh
-npm i small-cup
-```
-
-```html
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>small cup demo</title>
+    <script src="smallcup.min.js"></script>
   </head>
   <body>
     <div app></div>
-    <script type="module" src="./index.js"></script>
-  </body>
-</html>
+    <script>
 
-```
-
-```javascript
-// index.js
-
-import { cup, onpathname } from 'small-cup'
+const { cup, onpathname } = smallcup
 
 const context = {
     count: 0,
@@ -92,9 +56,6 @@ const app = cup({
 })
 
 onpathname(app)
-
-```
-
-## License
-
-MIT
+    </script>
+  </body>
+</html>

@@ -5,7 +5,8 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "build": "parcel build example/index.html",
+    "esbuild": "esbuild index.js --bundle --format=iife --global-name=smallcup --minify --outfile=smallcup.min.js",
+    "build": "npm run esbuild",
     "start": "parcel example/index.html"
   },
   "targets": {
@@ -30,6 +31,7 @@
     "@popperjs/core": "^2.11.6",
     "bootstrap": "^5.2.0",
     "buffer": "^6.0.3",
+    "esbuild": "^0.16.12",
     "parcel": "^2.7.0",
     "process": "^0.11.10"
   }

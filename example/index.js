@@ -6,7 +6,7 @@ if (module.hot) {
 import 'bootstrap/dist/css/bootstrap.css'
 import * as bootstrap from 'bootstrap'
 
-import cup, { h, a, link, onpathname } from '../index.js'
+import { cup, h, a, link, onpathname } from '../index.js'
 import xlsx2csv from '@ailnaf/xlsx2csv'
 
 const context = {
