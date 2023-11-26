@@ -19,6 +19,7 @@ type DOM {
     node: HTMLNode
     children: [DOM]
     type: DOMType
+    root: Boolean
     update: () => {}
     unload: () => {}
 }
