@@ -11,6 +11,12 @@ npm init small-cup@latest
 
 ## Usage
 
+```html
+<script type="module">
+import { render, mount } from 'https://unpkg.com/small-cup/index.js'
+</script>
+```
+
 ```sh
 npm i small-cup
 ```

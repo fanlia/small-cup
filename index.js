@@ -80,7 +80,6 @@ export const mount = (root, vnode, context) => {
       dom.unload()
     }
     dom = render(root, vnode, context)
-    console.log(dom)
   }
   window.onpopstate()
 
