@@ -10,28 +10,28 @@ class DOM {
     this.type = 'static'
     this.root = false
   }
-  node_onupdate() {
-    (this.node.onupdate || nope)()
+  async node_onupdate() {
+    await (this.node.onupdate || nope)()
   }
-  node_onunload() {
-    (this.node.onunload || nope)()
+  async node_onunload() {
+    await (this.node.onunload || nope)()
   }
-  update() {
+  async update() {
     for (const child of this.children) {
-      child.update()
+      await child.update()
     }
-    this.node_onupdate()
+    await this.node_onupdate()
   }
-  unload() {
+  async unload() {
     for (const child of this.children) {
-      child.unload()
+      await child.unload()
     }
-    this.node_onunload()
+    await this.node_onunload()
     this.children = []
   }
 }
 
-export const render = (node, vnode = {}, context, root) => {
+export const render = async (node, vnode = {}, context, root) => {
   const {
     template,
     components = {},
@@ -49,9 +49,9 @@ export const render = (node, vnode = {}, context, root) => {
     node.innerHTML = template
   }
 
-  const maybe_child_vnode = onload(node, context, root)
+  const maybe_child_vnode = await onload(node, context, root)
   if (maybe_child_vnode) {
-    const child_dom = render(node, maybe_child_vnode, context, root)
+    const child_dom = await render(node, maybe_child_vnode, context, root)
     dom.children.push(child_dom)
     dom.type = 'dynamic'
     return dom
@@ -63,25 +63,25 @@ export const render = (node, vnode = {}, context, root) => {
     if (!child_vnode) {
       continue
     }
-    const child_dom = render(child, child_vnode, context, root)
+    const child_dom = await render(child, child_vnode, context, root)
     dom.children.push(child_dom)
   }
 
-  dom.node_onupdate()
+  await dom.node_onupdate()
 
   return dom
 }
 
-export const mount = (root, vnode, context) => {
+export const mount = async (root, vnode, context) => {
   let dom
 
-  window.onpopstate = () => {
+  window.onpopstate = async () => {
     if (dom) {
-      dom.unload()
+      await dom.unload()
     }
-    dom = render(root, vnode, context)
+    dom = await render(root, vnode, context)
   }
-  window.onpopstate()
+  await window.onpopstate()
 
   return dom
 }
