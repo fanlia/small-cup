@@ -25,7 +25,7 @@ type DOM {
 
 type VNode {
     template: String
-    onload: (el: HTMLNode, ctx: Object, dom: DOM) => undefined | VNode
+    onload: (el: HTMLNode, ctx: Object, rootDom: DOM) => undefined | VNode
     components: {[key: String]: VNode}
 }
 
