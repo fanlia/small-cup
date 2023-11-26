@@ -7,7 +7,7 @@ import { render, mount } from './index.js'
 const counter = {
   onload: (el, ctx, dom) => {
     el.onupdate = () => {
-      el.textContent = ctx.count
+      el.textContent = `count is ${ctx.count}`
     }
     el.onunload = () => {
       console.log('unload counter')
