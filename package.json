@@ -19,6 +19,9 @@
   },
   "homepage": "https://github.com/fanlia/small-cup#readme",
   "devDependencies": {
+    "@popperjs/core": "^2.11.8",
+    "bootstrap": "^5.3.2",
+    "bootstrap-icons": "^1.11.2",
     "vite": "^5.0.2"
   }
 }

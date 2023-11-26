@@ -1,4 +1,7 @@
 
+import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap-icons/font/bootstrap-icons.css'
+import * as bootstrap from 'bootstrap'
 import { render, mount } from './index.js'
 
 const counter = {
@@ -18,14 +21,30 @@ const counter = {
 
 const nav = {
   template: `
-<a href='#/'>home</a>
-<a href='#/about'>about</a>
+<nav class="navbar navbar-expand-lg bg-body-tertiary mb-3">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#/"><i class="bi bi-house"></i></a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" href='#/'>Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href='#/about'>About</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
   `,
   onload: (el) => {
     const hash = location.hash || '#/'
-    for (const a of el.querySelectorAll('a')) {
+    for (const a of el.querySelectorAll('a.nav-link')) {
       if (a.hash === hash) {
-        a.style.color = 'red'
+        a.classList.add('active')
       }
     }
   },
@@ -33,9 +52,9 @@ const nav = {
 
 const home = {
   template: `
-    <p component='nav'></p>
-    <h1>home</h1>
-    <p><button component='counter'></button></p>
+    <div component='nav'></div>
+    <h1>Home</h1>
+    <p><button component='counter' class="btn btn-primary"></button></p>
   `,
   components: {
     nav,
@@ -45,8 +64,8 @@ const home = {
 
 const about = {
   template: `
-    <p component='nav'></p>
-    <h1>about</h1>
+    <div component='nav'></div>
+    <h1>About</h1>
   `,
   components: {
     nav,
