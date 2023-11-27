@@ -221,8 +221,10 @@ const checkin = async (ctx) => {
   if (user) {
     ctx.user = user
   } else {
-    ctx.login_redirect = location.hash === '#/login' ? '#/' : location.hash
-    history.replaceState(null, null, '#/login')
+    if (location.hash !== '#/login') {
+      ctx.login_redirect = location.hash
+      history.replaceState(null, null, '#/login')
+    }
   }
 }
 
