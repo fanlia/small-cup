@@ -162,11 +162,13 @@ const testh = {
         'data-id': '1',
       },
     }, [
-      h('span', { style: { fontWeight: 'bold' } }, 'This is bold'),
-      ' and this is just normal text ',
-      h('a', { href: '#/' }, 'go to Home'),
-      ' ',
-      h('input', { type: 'checkbox', checked: true, onclick: console.log }),
+      h('p', {}, [
+        h('span', { style: { fontWeight: 'bold' } }, 'This is bold'),
+        ' and this is just normal text ',
+        h('a', { href: '#/' }, 'go to Home'),
+        ' ',
+        h('input', { type: 'checkbox', checked: true, onclick: console.log }),
+      ]),
       h('<>', {}, [
         h("p", {}, 'abc'),
         h("p", {}, 'efg'),
