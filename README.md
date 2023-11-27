@@ -30,17 +30,19 @@ type VNode {
     components: {[key: String]: VNode}
 }
 
-fn h(tag: String | HTMLNode, props: {[String]: any}, children: undefined | [HTMLNode]) => HTMLNode
-
 ```
 
-### render(root: HTMLNode, vnode: VNode, context: Object)
+### render(root: HTMLNode, vnode: VNode, context: Object) => DOM
 
 render vnode to root with context
 
-### render(root: HTMLNode, vnode: VNode, context: Object)
+### render(root: HTMLNode, vnode: VNode, context: Object) => DOM
 
 render vnode to root with context when window.onpopstate triggerd
+
+### fn h(tag: String | HTMLNode, props: {[String]: any}, children: undefined | [HTMLNode]) => undefined | HTMLNode
+
+patch or create HTMLNode
 
 ## Usage
 
