@@ -235,10 +235,10 @@ const router = {
       case "":
       case "#/":
       case "#/home": {
-        return ctx.user ? home : login
+        return home
       }
       case "#/about": {
-        return ctx.user ? about : login
+        return about
       }
       case "#/login": {
         return ctx.user ? home : login
