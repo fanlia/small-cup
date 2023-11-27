@@ -231,7 +231,6 @@ const checkin = async (ctx) => {
 const router = {
   onload: async (el, ctx) => {
     await checkin(ctx)
-    const hash = location.hash
     switch (location.hash) {
       case "":
       case "#/":
