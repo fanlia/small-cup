@@ -2,7 +2,7 @@
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-icons/font/bootstrap-icons.css'
 import * as bootstrap from 'bootstrap'
-import { render, mount } from './index.js'
+import { render, mount, h } from './index.js'
 
 const KEY = 'access_token'
 
@@ -154,13 +154,36 @@ const home = {
   },
 }
 
+const testh = {
+  onload: (el) => {
+    h(el, {
+      className: 'vnode',
+      attributes: {
+        'data-id': '1',
+      },
+    }, [
+      h('span', { style: { fontWeight: 'bold' } }, 'This is bold'),
+      ' and this is just normal text ',
+      h('a', { href: '#/' }, 'go to Home'),
+      ' ',
+      h('input', { type: 'checkbox', checked: true, onclick: console.log }),
+      h('<>', {}, [
+        h("p", {}, 'abc'),
+        h("p", {}, 'efg'),
+      ]),
+    ])
+  }
+}
+
 const about = {
   template: `
     <div component='nav'></div>
     <h1>About</h1>
+    <div component='testh'></div>
   `,
   components: {
     nav,
+    testh,
   },
 }
 

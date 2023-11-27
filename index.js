@@ -85,3 +85,52 @@ export const mount = async (root, vnode, context) => {
 
   return dom
 }
+
+export function h (tag, props = {}, children) {
+  if (!tag) return
+
+  let node
+  let isOld = false
+
+  if (typeof tag === 'string') {
+    if (tag === '<>') {
+        node = document.createDocumentFragment()
+    } else {
+        node = document.createElement(tag)
+    }
+  } else {
+    node = tag
+    isOld = true
+  }
+
+  for (const key in props) {
+    const value = props[key]
+    if (key === 'attributes') {
+      if (value && typeof value === 'object') {
+        for (const attr in value) {
+          node.setAttribute(attr, value[attr])
+        }
+      }
+    } else if (value && typeof value === 'object') {
+      for (const nkey in value) {
+        node[key][nkey] = value[nkey]
+      }
+    } else {
+      node[key] = props[key]
+    }
+  }
+
+  if (isOld) {
+    node.innerHTML = ''
+  }
+
+  children = Array.isArray(children) ? children : children ? [children] : []
+
+  for (let child of children) {
+    if (!child) continue
+    const childNode = typeof child === 'object' ? child :  document.createTextNode(String(child))
+    node.appendChild(childNode)
+  }
+
+  return node
+}

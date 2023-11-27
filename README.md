@@ -30,6 +30,8 @@ type VNode {
     components: {[key: String]: VNode}
 }
 
+fn h(tag: String | HTMLNode, props: {[String]: any}, children: undefined | [HTMLNode]) => HTMLNode
+
 ```
 
 ### render(root: HTMLNode, vnode: VNode, context: Object)
