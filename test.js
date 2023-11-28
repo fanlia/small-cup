@@ -146,7 +146,7 @@ const home = {
   template: `
     <div component='nav'></div>
     <h1>Home</h1>
-    <p><button component='counter' class="btn btn-primary"></button></p>
+    <p><button component='counter' id='counter' class="btn btn-primary"></button></p>
   `,
   components: {
     nav,

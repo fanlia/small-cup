@@ -18,6 +18,7 @@ enum DOMType { static dynamic }
 type DOM {
     node: HTMLNode
     children: [DOM]
+    map: {[String]: DOM}
     type: DOMType
     root: Boolean
     update: () => {}
@@ -36,7 +37,7 @@ type VNode {
 
 render vnode to root with context
 
-### render(root: HTMLNode, vnode: VNode, context: Object) => DOM
+### mount(root: HTMLNode, vnode: VNode, context: Object)
 
 render vnode to root with context when window.onpopstate triggerd
 

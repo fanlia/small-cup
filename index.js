@@ -9,6 +9,7 @@ class DOM {
     this.children = []
     this.type = 'static'
     this.root = false
+    this.map = {}
   }
   async node_onupdate() {
     await (this.node.onupdate || nope)()
@@ -28,6 +29,7 @@ class DOM {
     }
     await this.node_onunload()
     this.children = []
+    this.map = {}
   }
 }
 
@@ -53,6 +55,10 @@ export const render = async (node, vnode = {}, context, root) => {
   if (maybe_child_vnode) {
     const child_dom = await render(node, maybe_child_vnode, context, root)
     dom.children.push(child_dom)
+    if (node.id) {
+      root.map[node.id] = child_dom
+      dom.map[node.id] = child_dom
+    }
     dom.type = 'dynamic'
     return dom
   }
@@ -65,6 +71,10 @@ export const render = async (node, vnode = {}, context, root) => {
     }
     const child_dom = await render(child, child_vnode, context, root)
     dom.children.push(child_dom)
+    if (child.id) {
+      root.map[child.id] = child_dom
+      dom.map[child.id] = child_dom
+    }
   }
 
   await dom.node_onupdate()
@@ -82,8 +92,6 @@ export const mount = async (root, vnode, context) => {
     dom = await render(root, vnode, context)
   }
   await window.onpopstate()
-
-  return dom
 }
 
 export function h (tag, props = {}, children) {
