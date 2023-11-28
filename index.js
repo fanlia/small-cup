@@ -31,6 +31,15 @@ class DOM {
     this.children = []
     this.map = {}
   }
+
+  push(child_dom, root_dom) {
+    this.children.push(child_dom)
+    const id = child_dom.node.id
+    if (!id) return
+    this.map[id] = child_dom
+    if (this.root) return
+    root_dom.map[id] = child_dom
+  }
 }
 
 export const render = async (node, vnode = {}, context, root) => {
@@ -54,11 +63,7 @@ export const render = async (node, vnode = {}, context, root) => {
   const maybe_child_vnode = await onload(node, context, root)
   if (maybe_child_vnode) {
     const child_dom = await render(node, maybe_child_vnode, context, root)
-    dom.children.push(child_dom)
-    if (node.id) {
-      root.map[node.id] = child_dom
-      dom.map[node.id] = child_dom
-    }
+    dom.push(child_dom, root)
     dom.type = 'dynamic'
     return dom
   }
@@ -70,11 +75,7 @@ export const render = async (node, vnode = {}, context, root) => {
       continue
     }
     const child_dom = await render(child, child_vnode, context, root)
-    dom.children.push(child_dom)
-    if (child.id) {
-      root.map[child.id] = child_dom
-      dom.map[child.id] = child_dom
-    }
+    dom.push(child_dom, root)
   }
 
   await dom.node_onupdate()
