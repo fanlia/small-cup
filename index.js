@@ -36,8 +36,6 @@ class DOM {
     this.children.push(child_dom)
     const id = child_dom.node.id
     if (!id) return
-    this.map[id] = child_dom
-    if (this.root) return
     root_dom.map[id] = child_dom
   }
 }
