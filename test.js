@@ -54,19 +54,29 @@ export class Auth {
     return this.me(access_token)
   }
 }
-const counter = {
-  onload: (el, ctx, dom) => {
-    el.onupdate = () => {
-      el.textContent = `count is ${ctx.count}`
-    }
-    el.onunload = () => {
-      console.log('unload counter')
-    }
-    el.onclick = () => {
-      ctx.count++
-      dom.update()
+
+const auth = new Auth({
+  fetchUser: async (access_token) => {
+    return {
+      username: 'username',
     }
   },
+
+  signin: async (signData) => {
+    return 'access_token sample'
+  },
+})
+
+const checkin = async (ctx) => {
+  const user = await auth.checkin()
+  if (user) {
+    ctx.user = user
+  } else {
+    if (location.hash !== '#/login') {
+      ctx.login_redirect = location.hash
+      history.replaceState(null, null, '#/login')
+    }
+  }
 }
 
 const nav = {
@@ -79,12 +89,6 @@ const nav = {
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link" href='#/'>Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href='#/about'>About</a>
-        </li>
       </ul>
       <div class="d-flex">
         <div id="login">
@@ -104,6 +108,11 @@ const nav = {
 </nav>
   `,
   onload: async (el, ctx) => {
+    el.querySelector('ul.navbar-nav').innerHTML = ctx.pages
+      .map(d => `<li class="nav-item">
+          <a class="nav-link" href='${d.path}'>${d.title}</a>
+        </li>`)
+      .join('')
     const hash = location.hash || '#/'
     for (const a of el.querySelectorAll('a.nav-link')) {
       if (a.hash === hash) {
@@ -136,6 +145,61 @@ const nav = {
         console.error('logout failed', e)
         alert('logout failed')
       }
+    }
+  },
+}
+
+const login = {
+  template: `
+    <div component='nav'></div>
+    <h1>Login</h1>
+<form class="w-50 mx-auto">
+  <div class="mb-3">
+    <label for="exampleInputEmail1" class="form-label">Email address</label>
+    <input type="email" class="form-control" id="exampleInputEmail1" name="email" aria-describedby="emailHelp">
+    <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+  </div>
+  <div class="mb-3">
+    <label for="exampleInputPassword1" class="form-label">Password</label>
+    <input type="password" class="form-control" id="exampleInputPassword1" name="password">
+  </div>
+  <div class="mb-3 form-check">
+    <input type="checkbox" class="form-check-input" id="exampleCheck1" name="autoLogin">
+    <label class="form-check-label" for="exampleCheck1">Rememeber me</label>
+  </div>
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+  `,
+  onload: async (el, ctx) => {
+    const $form = el.querySelector('form')
+    $form.onsubmit = async (e) => {
+      e.preventDefault()
+      const signData = Array.from(new FormData(e.target)).reduce((m, d) => ({...m, [d[0]]: d[1]}), {})
+      try {
+        await auth.login(signData)
+        location.hash = ctx.login_redirect || '#/'
+      } catch (e) {
+        console.error('login failed', e)
+        alert('login failed')
+      }
+    }
+  },
+  components: {
+    nav,
+  },
+}
+
+const counter = {
+  onload: (el, ctx, dom) => {
+    el.onupdate = () => {
+      el.textContent = `count is ${ctx.count}`
+    }
+    el.onunload = () => {
+      console.log('unload counter')
+    }
+    el.onclick = () => {
+      ctx.count++
+      dom.update()
     }
   },
 }
@@ -187,73 +251,13 @@ const about = {
   },
 }
 
-const auth = new Auth({
-  fetchUser: async (access_token) => {
-    return {
-      username: 'username',
-    }
-  },
-
-  signin: async (signData) => {
-    return 'access_token sample'
-  },
-})
-
-const login = {
-  template: `
-    <div component='nav'></div>
-    <h1>Login</h1>
-<form class="w-50 mx-auto">
-  <div class="mb-3">
-    <label for="exampleInputEmail1" class="form-label">Email address</label>
-    <input type="email" class="form-control" id="exampleInputEmail1" name="email" aria-describedby="emailHelp">
-    <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
-  </div>
-  <div class="mb-3">
-    <label for="exampleInputPassword1" class="form-label">Password</label>
-    <input type="password" class="form-control" id="exampleInputPassword1" name="password">
-  </div>
-  <div class="mb-3 form-check">
-    <input type="checkbox" class="form-check-input" id="exampleCheck1" name="autoLogin">
-    <label class="form-check-label" for="exampleCheck1">Rememeber me</label>
-  </div>
-  <button type="submit" class="btn btn-primary">Submit</button>
-</form>
-  `,
-  onload: async (el, ctx) => {
-    const $form = el.querySelector('form')
-    $form.onsubmit = async (e) => {
-      e.preventDefault()
-      const signData = Array.from(new FormData(e.target)).reduce((m, d) => ({...m, [d[0]]: d[1]}), {})
-      try {
-        await auth.login(signData)
-        location.hash = ctx.login_redirect || '#/'
-      } catch (e) {
-        console.error('login failed', e)
-        alert('login failed')
-      }
-    }
-  },
-  components: {
-    nav,
-  },
-}
-
-const checkin = async (ctx) => {
-  const user = await auth.checkin()
-  if (user) {
-    ctx.user = user
-  } else {
-    if (location.hash !== '#/login') {
-      ctx.login_redirect = location.hash
-      history.replaceState(null, null, '#/login')
-    }
-  }
-}
-
 const router = {
   onload: async (el, ctx) => {
     await checkin(ctx)
+    ctx.pages = [
+      { path: '#/', title: 'Home' },
+      { path: '#/about', title: 'About' },
+    ]
     switch (location.hash) {
       case "":
       case "#/":
