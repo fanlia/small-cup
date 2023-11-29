@@ -89,7 +89,8 @@ const checkin = async (ctx) => {
     ctx.user = user
   } else {
     if (ctx.route.hash !== '#/login') {
-      const newpath = `#/login?redirect=${encodeURIComponent(ctx.route.path)}`
+      const redirect = ctx.route.path ? `?redirect=${encodeURIComponent(ctx.route.path)}` : ''
+      const newpath = `#/login${redirect}`
       ctx.route = hash2route(newpath)
       history.replaceState(null, null, newpath)
     }
