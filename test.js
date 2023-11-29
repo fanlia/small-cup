@@ -67,14 +67,31 @@ const auth = new Auth({
   },
 })
 
+const hash2route = (path) => {
+  const [pathname, search] = path.split('?')
+  const parts = pathname.split('/')
+  const hash = parts.slice(0, 2).join('/')
+  const params = parts.slice(2)
+  const query = Array.from(new URLSearchParams(search)).reduce((m, d) => ({...m, [d[0]]: d[1]}), {})
+
+  return {
+    path,
+    hash,
+    params,
+    query
+  }
+}
+
 const checkin = async (ctx) => {
   const user = await auth.checkin()
+  ctx.route = hash2route(location.hash)
   if (user) {
     ctx.user = user
   } else {
-    if (location.hash !== '#/login') {
-      ctx.login_redirect = location.hash
-      history.replaceState(null, null, '#/login')
+    if (ctx.route.hash !== '#/login') {
+      const newpath = `#/login?redirect=${encodeURIComponent(ctx.route.path)}`
+      ctx.route = hash2route(newpath)
+      history.replaceState(null, null, newpath)
     }
   }
 }
@@ -113,7 +130,7 @@ const nav = {
           <a class="nav-link" href='${d.path}'>${d.title}</a>
         </li>`)
       .join('')
-    const hash = location.hash || '#/'
+    const hash = ctx.route.hash || '#/'
     for (const a of el.querySelectorAll('a.nav-link')) {
       if (a.hash === hash) {
         a.classList.add('active')
@@ -177,13 +194,24 @@ const login = {
       const signData = Array.from(new FormData(e.target)).reduce((m, d) => ({...m, [d[0]]: d[1]}), {})
       try {
         await auth.login(signData)
-        location.hash = ctx.login_redirect || '#/'
+        location.hash = ctx.route.query.redirect || '#/'
       } catch (e) {
         console.error('login failed', e)
         alert('login failed')
       }
     }
   },
+  components: {
+    nav,
+  },
+}
+
+const notfound = {
+  template: `
+    <div component='nav'></div>
+    <h1>Not Found</h1>
+    <p><a href='#/' class="btn btn-primary">Home</a></p>
+  `,
   components: {
     nav,
   },
@@ -254,7 +282,7 @@ const router = {
       { path: '#/', title: 'Home' },
       { path: '#/about', title: 'About' },
     ]
-    switch (location.hash) {
+    switch (ctx.route.hash) {
       case "":
       case "#/":
       case "#/home": {
@@ -265,6 +293,9 @@ const router = {
       }
       case "#/login": {
         return ctx.user ? home : login
+      }
+      default: {
+        return notfound
       }
     }
   },
