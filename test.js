@@ -87,6 +87,11 @@ const checkin = async (ctx) => {
   ctx.route = hash2route(location.hash)
   if (user) {
     ctx.user = user
+    if (ctx.route.hash === '#/login') {
+      const newpath = `#/`
+      ctx.route = hash2route(newpath)
+      history.replaceState(null, null, newpath)
+    }
   } else {
     if (ctx.route.hash !== '#/login') {
       const redirect = ctx.route.path ? `?redirect=${encodeURIComponent(ctx.route.path)}` : ''
@@ -293,7 +298,7 @@ const router = {
         return about
       }
       case "#/login": {
-        return ctx.user ? home : login
+        return login
       }
       default: {
         return notfound
