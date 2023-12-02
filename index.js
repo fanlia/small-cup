@@ -129,7 +129,6 @@ export function h (node, props = {}, children) {
     children = Array.isArray(children) ? children : children ? [children] : []
 
     for (let child of children) {
-      if (!child) continue
       const childNode = typeof child === 'object' ? child :  document.createTextNode(String(child))
       node.appendChild(childNode)
     }
