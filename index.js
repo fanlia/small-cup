@@ -129,10 +129,10 @@ export function h (node, props = {}, children) {
     children = Array.isArray(children) ? children : children ? [children] : []
 
     for (let child of children) {
+      if (child === null) continue
       const childNode = typeof child === 'object' ? child :  document.createTextNode(String(child))
       node.appendChild(childNode)
     }
-
   }
 
   return node
