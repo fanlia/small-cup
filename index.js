@@ -127,16 +127,20 @@ export function h (tag, props = {}, children) {
     }
   }
 
-  if (isOld) {
-    node.innerHTML = ''
-  }
+  if (children !== undefined) {
 
-  children = Array.isArray(children) ? children : children ? [children] : []
+    if (isOld) {
+      node.innerHTML = ''
+    }
 
-  for (let child of children) {
-    if (!child) continue
-    const childNode = typeof child === 'object' ? child :  document.createTextNode(String(child))
-    node.appendChild(childNode)
+    children = Array.isArray(children) ? children : children ? [children] : []
+
+    for (let child of children) {
+      if (!child) continue
+      const childNode = typeof child === 'object' ? child :  document.createTextNode(String(child))
+      node.appendChild(childNode)
+    }
+
   }
 
   return node
