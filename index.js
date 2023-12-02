@@ -93,21 +93,14 @@ export const mount = async (root, vnode, context) => {
   await window.onpopstate()
 }
 
-export function h (tag, props = {}, children) {
-  if (!tag) return
+export function h (node, props = {}, children) {
 
-  let node
-  let isOld = false
-
-  if (typeof tag === 'string') {
-    if (tag === '<>') {
+  if (typeof node === 'string') {
+    if (node === '<>') {
         node = document.createDocumentFragment()
     } else {
-        node = document.createElement(tag)
+        node = document.createElement(node)
     }
-  } else {
-    node = tag
-    isOld = true
   }
 
   for (const key in props) {
@@ -129,7 +122,7 @@ export function h (tag, props = {}, children) {
 
   if (children !== undefined) {
 
-    if (isOld) {
+    if (node.isConnected) {
       node.innerHTML = ''
     }
 
