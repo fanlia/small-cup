@@ -126,7 +126,7 @@ export function h (node, props = {}, children) {
       node.innerHTML = ''
     }
 
-    children = Array.isArray(children) ? children : children ? [children] : []
+    children = Array.isArray(children) ? children : [children]
 
     for (let child of children) {
       if (child === null) continue
