@@ -259,7 +259,7 @@ const testh = {
           'data-id': '1',
         },
       }, [
-        h('div', {}, [
+        h('p', {}, [
           h('span', { style: { fontWeight: 'bold' } }, 'This is bold'),
           ' and this is just normal text ',
           h('a', { props: {href: '#/'} }, 'go to Home'),
