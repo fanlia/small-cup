@@ -93,47 +93,33 @@ export const mount = async (root, vnode, context) => {
   await window.onpopstate()
 }
 
-export function h (node, props = {}, children) {
+import {
+  init,
+  classModule,
+  propsModule,
+  styleModule,
+  eventListenersModule,
+  attributesModule,
+  datasetModule,
+  h as hh,
+} from "snabbdom"
+
+const patch = init([
+  classModule,
+  propsModule,
+  styleModule,
+  eventListenersModule,
+  attributesModule,
+  datasetModule,
+])
+
+export function h (node, props, children) {
 
   if (typeof node === 'string') {
-    if (node === '<>') {
-        node = document.createDocumentFragment()
-    } else {
-        node = document.createElement(node)
-    }
+    return hh(node, props, children)
   }
 
-  for (const key in props) {
-    const value = props[key]
-    if (key === 'attributes') {
-      if (value && typeof value === 'object') {
-        for (const attr in value) {
-          node.setAttribute(attr, value[attr])
-        }
-      }
-    } else if (value && typeof value === 'object') {
-      for (const nkey in value) {
-        node[key][nkey] = value[nkey]
-      }
-    } else {
-      node[key] = props[key]
-    }
-  }
-
-  if (children !== undefined) {
-
-    if (node.isConnected) {
-      node.innerHTML = ''
-    }
-
-    children = Array.isArray(children) ? children : [children]
-
-    for (let child of children) {
-      if (child === null) continue
-      const childNode = typeof child === 'object' ? child :  document.createTextNode(String(child))
-      node.appendChild(childNode)
-    }
-  }
+  node.old = patch(node.old || node, hh(node.tagName, props, children))
 
   return node
 }
