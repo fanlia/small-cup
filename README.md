@@ -48,6 +48,8 @@ type VNode {
     data: VNodeData
 }
 
+type ChildVNode = String | VNode
+
 ```
 
 ### render(root: HTMLNode, vnode: VNode, context: Object) => DOM
@@ -58,7 +60,7 @@ render vnode to root with context
 
 render vnode to root with context when window.onpopstate triggerd
 
-### h(tag: String | HTMLNode, props: {[String]: any}, children: undefined | [VNode]) => VNode | HTMLNode
+### h(tag: String | HTMLNode, props: Object, children: undefined | [ChildVNode]) => VNode | HTMLNode
 
 patch or create HTMLNode
 
