@@ -254,21 +254,19 @@ const testh = {
   onload: (el, ctx, dom) => {
     el.onupdate = (e) => {
       h(el, {
-        class: { vnode: true },
-        attrs: {
+        className: 'vnode',
+        attributes: {
           'data-id': '1',
         },
       }, [
         h('p', {}, [
           h('span', { style: { fontWeight: 'bold' } }, 'This is bold'),
           ' and this is just normal text ',
-          h('a', { props: {href: '#/'} }, 'go to Home'),
+          h('a', { href: '#/' }, 'go to Home'),
           ' ',
-          h('input', { props: {type: 'checkbox', checked: true}, on: {click: console.log }}),
+          h('input', { type: 'checkbox', checked: true, onclick: console.log }),
         ]),
-        h('button', { on: {click: () => {
-          dom.update()
-        } }, class: { 'btn': true, 'btn-secondary': true } }, `count ${ctx.count++}`),
+        h('button', { onclick: () => dom.update(), className: 'btn btn-secondary' }, `count is ${ctx.count++}`),
       ])
     }
   }

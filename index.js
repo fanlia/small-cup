@@ -93,33 +93,120 @@ export const mount = async (root, vnode, context) => {
   await window.onpopstate()
 }
 
-import {
-  init,
-  classModule,
-  propsModule,
-  styleModule,
-  eventListenersModule,
-  attributesModule,
-  datasetModule,
-  h as hh,
-} from "snabbdom"
+function create_vnode(tag, props = {}, children = []) {
+  children = Array.isArray(children) ? children : [children]
+  children = children.map(d => {
+    if (typeof d === 'object' && d) {
+      return d
+    }
+    return {
+      type: 'text',
+      data: String(d),
+    }
+  })
 
-const patch = init([
-  classModule,
-  propsModule,
-  styleModule,
-  eventListenersModule,
-  attributesModule,
-  datasetModule,
-])
+  return {
+    type: 'element',
+    data: {
+      tag,
+      props,
+      children,
+    },
+  }
+}
 
-export function h (node, props, children) {
+function create_node({type, data}) {
+  switch (type) {
+    case 'text': {
+      const node = document.createTextNode(data)
+      return node
+    }
+    case 'element': {
+      const { tag, props, children } = data
+      const node = document.createElement(tag)
+      patch_props(node, props)
+      patch_children(node, children)
+      return node
+    }
+    default: {
+      throw new Error(`unkown vnode type: ${type}`)
+    }
+  }
+}
 
-  if (typeof node === 'string') {
-    return hh(node, props, children)
+function patch_props(node, props) {
+  for (const key in props) {
+    const value = props[key]
+    if (key === 'attributes') {
+      if (value && typeof value === 'object') {
+        for (const attr in value) {
+          node.setAttribute(attr, value[attr])
+        }
+      }
+    } else if (value && typeof value === 'object') {
+      for (const nkey in value) {
+        node[key][nkey] = value[nkey]
+      }
+    } else {
+      node[key] = props[key]
+    }
+  }
+}
+
+function patch_children(node, next_children) {
+
+  const current_children = Array.from(node.childNodes)
+  const current_length = current_children.length
+  const next_length = next_children.length
+  const length = current_length > next_length ? next_length : current_length
+
+  let index = 0
+
+  while (index < length) {
+    const current = current_children[index]
+    const next = next_children[index]
+
+    if (next.type === 'element') {
+      const { tag, props, children } = next.data
+      if (current.nodeType === 1 && current.tagName.toLowerCase() === tag.toLowerCase()) {
+        patch_node(current, props, children)
+      } else {
+        node.removeChild(current)
+      }
+    } else if (next.type === 'text') {
+      if (current.nodeType === 3) {
+        if (current.textContent !== next.data) {
+          current.textContent = next.data
+        }
+      } else {
+        node.removeChild(current)
+      }
+    }
+    index++
   }
 
-  node.old = patch(node.old || node, hh(node.tagName, props, children))
+  while (index < current_length) {
+    const current_child = current_children[index]
+    node.removeChild(current_child)
+    index++
+  }
 
-  return node
+  while (index < next_length) {
+    const next_child = create_node(next_children[index])
+    node.appendChild(next_child)
+    index++
+  }
 }
+
+function patch_node(node, props, children) {
+  patch_props(node, props)
+  patch_children(node, children)
+}
+
+export function h(tag, props, children) {
+  if (typeof tag === 'string') {
+    return create_vnode(tag, props, children)
+  }
+  return patch_node(tag, props, children)
+}
+
