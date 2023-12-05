@@ -180,7 +180,7 @@ function patch_children(node, next_children) {
           current_child.textContent = next.data
         }
       } else {
-        const next_child = create_node(next_children[index])
+        const next_child = create_node(next)
         node.replaceChild(next_child, current_child)
       }
     }
