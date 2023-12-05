@@ -264,6 +264,7 @@ const testh = {
           ' and this is just normal text ',
           h('a', { href: '#/' }, 'go to Home'),
           ' ',
+          h('input', { type: 'text', value: ctx.count, onload: node => console.log('onload', node.isConnected) }),
           h('input', { type: 'checkbox', checked: true, onclick: console.log }),
         ]),
         h('button', { onclick: () => dom.update(), className: 'btn btn-secondary' }, `count is ${ctx.count++}`),

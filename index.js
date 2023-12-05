@@ -115,15 +115,21 @@ function create_vnode(tag, props = {}, children = []) {
   }
 }
 
-function create_node({type, data}) {
+function create_node({type, data}, parent) {
   switch (type) {
     case 'text': {
       const node = document.createTextNode(data)
+      if (parent) {
+        parent.appendChild(node)
+      }
       return node
     }
     case 'element': {
       const { tag, props, children } = data
       const node = document.createElement(tag)
+      if (parent) {
+        parent.appendChild(node)
+      }
       patch_props(node, props)
       patch_children(node, children)
       return node
@@ -153,6 +159,10 @@ function patch_props(node, props) {
   }
 }
 
+function child_onload(next_child) {
+  (next_child.onload || nope)(next_child)
+}
+
 function patch_children(node, next_children) {
 
   const current_children = Array.from(node.childNodes)
@@ -173,6 +183,7 @@ function patch_children(node, next_children) {
       } else {
         const next_child = create_node(next)
         node.replaceChild(next_child, current_child)
+        child_onload(next_child)
       }
     } else if (next.type === 'text') {
       if (current_child.nodeType === 3) {
@@ -194,8 +205,8 @@ function patch_children(node, next_children) {
   }
 
   while (index < next_length) {
-    const next_child = create_node(next_children[index])
-    node.appendChild(next_child)
+    const next_child = create_node(next_children[index], node)
+    child_onload(next_child)
     index++
   }
 }
