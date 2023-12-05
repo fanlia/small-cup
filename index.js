@@ -163,23 +163,25 @@ function patch_children(node, next_children) {
   let index = 0
 
   while (index < length) {
-    const current = current_children[index]
+    const current_child = current_children[index]
     const next = next_children[index]
 
     if (next.type === 'element') {
       const { tag, props, children } = next.data
-      if (current.nodeType === 1 && current.tagName.toLowerCase() === tag.toLowerCase()) {
-        patch_node(current, props, children)
+      if (current_child.nodeType === 1 && current_child.tagName.toLowerCase() === tag.toLowerCase()) {
+        patch_node(current_child, props, children)
       } else {
-        node.removeChild(current)
+        const next_child = create_node(next)
+        node.replaceChild(next_child, current_child)
       }
     } else if (next.type === 'text') {
-      if (current.nodeType === 3) {
-        if (current.textContent !== next.data) {
-          current.textContent = next.data
+      if (current_child.nodeType === 3) {
+        if (current_child.textContent !== next.data) {
+          current_child.textContent = next.data
         }
       } else {
-        node.removeChild(current)
+        const next_child = create_node(next_children[index])
+        node.replaceChild(next_child, current_child)
       }
     }
     index++
