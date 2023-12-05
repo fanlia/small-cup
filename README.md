@@ -25,10 +25,27 @@ type DOM {
     unload: () => {}
 }
 
-type VNode {
+type Component {
     template: String
-    onload: (el: HTMLNode, ctx: Object, rootDom: DOM) => undefined | VNode
-    components: {[key: String]: VNode}
+    onload: (el: HTMLNode, ctx: Object, rootDom: DOM) => undefined | Component
+    components: {[key: String]: Component}
+}
+
+type ElementVNodeData {
+    tag: String
+    props: Object
+    children: undefined | [VNodeType]
+}
+
+type TextVNodeData = String
+
+type VNodeData = ElementVNodeData | TextVNodeData
+
+enum VNodeType { element text }
+
+type VNode {
+    type: VNodeType
+    data: VNodeData
 }
 
 ```
@@ -41,7 +58,7 @@ render vnode to root with context
 
 render vnode to root with context when window.onpopstate triggerd
 
-### fn h(tag: String | HTMLNode, props: {[String]: any}, children: undefined | [HTMLNode]) => undefined | HTMLNode
+### h(tag: String | HTMLNode, props: {[String]: any}, children: undefined | [VNode]) => VNode | HTMLNode
 
 patch or create HTMLNode
 
@@ -49,7 +66,7 @@ patch or create HTMLNode
 
 ```html
 <script type="module">
-import { render, mount } from 'https://unpkg.com/small-cup/index.js'
+import { render, mount, h } from 'https://unpkg.com/small-cup/index.js'
 </script>
 ```
 

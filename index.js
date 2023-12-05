@@ -201,6 +201,7 @@ function patch_children(node, next_children) {
 function patch_node(node, props, children) {
   patch_props(node, props)
   patch_children(node, children)
+  return node
 }
 
 export function h(tag, props, children) {
