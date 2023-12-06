@@ -115,23 +115,20 @@ function create_vnode(tag, props = {}, children = []) {
   }
 }
 
-function create_node({type, data}, parent) {
+function create_node({type, data}, appended = []) {
   switch (type) {
     case 'text': {
       const node = document.createTextNode(data)
-      if (parent) {
-        parent.appendChild(node)
-      }
       return node
     }
     case 'element': {
       const { tag, props, children } = data
       const node = document.createElement(tag)
-      if (parent) {
-        parent.appendChild(node)
-      }
       patch_props(node, props)
-      patch_children(node, children)
+      patch_children(node, children, appended)
+      if (typeof node.onload === 'function') {
+        appended.push(node)
+      }
       return node
     }
     default: {
@@ -159,11 +156,7 @@ function patch_props(node, props) {
   }
 }
 
-function child_onload(next_child) {
-  (next_child.onload || nope)(next_child)
-}
-
-function patch_children(node, next_children) {
+function patch_children(node, next_children, appended = []) {
 
   const current_children = node.childNodes
   let current_length = current_children.length
@@ -188,14 +181,13 @@ function patch_children(node, next_children) {
           // use id
           if (current_child.id === next_id) {
             // the same id node
-            patch_node(current_child, props, children)
+            patch_node(current_child, props, children, appended)
           } else {
             const found = current_children_id_map[next_id]
             if (found === undefined) {
               // create a node
-              const next_child = create_node(next)
+              const next_child = create_node(next, appended)
               node.insertBefore(next_child, current_child)
-              child_onload(next_child)
               current_length++
             } else {
               // move a node
@@ -204,13 +196,12 @@ function patch_children(node, next_children) {
           }
         } else {
           // no id
-          patch_node(current_child, props, children)
+          patch_node(current_child, props, children, appended)
         }
       } else {
         // not a element or tagName is different
-        const next_child = create_node(next)
+        const next_child = create_node(next, appended)
         node.replaceChild(next_child, current_child)
-        child_onload(next_child)
       }
     } else if (next.type === 'text') {
       // text
@@ -222,7 +213,7 @@ function patch_children(node, next_children) {
         }
       } else {
         // not a text node
-        const next_child = create_node(next)
+        const next_child = create_node(next, appended)
         node.replaceChild(next_child, current_child)
       }
     }
@@ -230,22 +221,25 @@ function patch_children(node, next_children) {
     next_index++
   }
 
+  // remove unused node
   while (current_index < current_length) {
     const current_child = current_children[current_index]
     node.removeChild(current_child)
     current_index++
   }
 
+  // create new node
   while (next_index < next_length) {
-    const next_child = create_node(next_children[next_index], node)
-    child_onload(next_child)
+    const next = next_children[next_index]
+    const next_child = create_node(next, appended)
+    node.appendChild(next_child)
     next_index++
   }
 }
 
-function patch_node(node, props, children) {
+function patch_node(node, props, children, appended) {
   patch_props(node, props)
-  patch_children(node, children)
+  patch_children(node, children, appended)
   return node
 }
 
@@ -253,6 +247,13 @@ export function h(tag, props, children) {
   if (typeof tag === 'string') {
     return create_vnode(tag, props, children)
   }
-  return patch_node(tag, props, children)
+
+  // collect node with node.onload defined
+  const appended = []
+  patch_node(tag, props, children, appended)
+
+  appended.forEach(node => node.onload(node))
+
+  return tag
 }
 
