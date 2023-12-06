@@ -156,6 +156,7 @@ function patch_props(node, props) {
   }
 }
 
+// patch children on the fly
 function patch_children(node, next_children, appended = []) {
 
   const current_children = node.childNodes
