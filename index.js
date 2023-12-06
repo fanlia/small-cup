@@ -193,6 +193,7 @@ function patch_children(node, next_children, appended = []) {
             } else {
               // move a node
               node.insertBefore(found, current_child)
+              patch_node(found, props, children, appended)
             }
           }
         } else {
