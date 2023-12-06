@@ -34,7 +34,7 @@ type Component {
 type ElementVNodeData {
     tag: String
     props: Object
-    children: undefined | [VNodeType]
+    children: undefined | [ChildVNode]
 }
 
 type TextVNodeData = String
