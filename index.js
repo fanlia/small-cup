@@ -165,49 +165,80 @@ function child_onload(next_child) {
 
 function patch_children(node, next_children) {
 
-  const current_children = Array.from(node.childNodes)
-  const current_length = current_children.length
+  const current_children = node.childNodes
+  let current_length = current_children.length
   const next_length = next_children.length
-  const length = current_length > next_length ? next_length : current_length
 
-  let index = 0
+  const current_children_id_map = Array.from(node.childNodes).reduce((m, d) => d.id ? {...m, [d.id]: d} : m, {})
 
-  while (index < length) {
-    const current_child = current_children[index]
-    const next = next_children[index]
+  let current_index = 0
+  let next_index = 0
+
+  while (current_index < current_length && next_index < next_length) {
+    const current_child = current_children[current_index]
+    const next = next_children[next_index]
 
     if (next.type === 'element') {
-      const { tag, props, children } = next.data
+      // element
+      const { tag, props = {}, children } = next.data
       if (current_child.nodeType === 1 && current_child.tagName.toLowerCase() === tag.toLowerCase()) {
-        patch_node(current_child, props, children)
+        const next_id = String(props.id)
+        if (current_child.id && next_id) {
+          // use id
+          if (current_child.id === next_id) {
+            // the same id node
+            patch_node(current_child, props, children)
+          } else {
+            const found = current_children_id_map[next_id]
+            if (found === undefined) {
+              // create a node
+              const next_child = create_node(next)
+              node.insertBefore(next_child, current_child)
+              child_onload(next_child)
+              current_length++
+            } else {
+              // move a node
+              node.insertBefore(found, current_child)
+            }
+          }
+        } else {
+          // no id
+          patch_node(current_child, props, children)
+        }
       } else {
+        // not a element or tagName is different
         const next_child = create_node(next)
         node.replaceChild(next_child, current_child)
         child_onload(next_child)
       }
     } else if (next.type === 'text') {
+      // text
       if (current_child.nodeType === 3) {
+        // a text node
         if (current_child.textContent !== next.data) {
+          // text content changed
           current_child.textContent = next.data
         }
       } else {
+        // not a text node
         const next_child = create_node(next)
         node.replaceChild(next_child, current_child)
       }
     }
-    index++
+    current_index++
+    next_index++
   }
 
-  while (index < current_length) {
-    const current_child = current_children[index]
+  while (current_index < current_length) {
+    const current_child = current_children[current_index]
     node.removeChild(current_child)
-    index++
+    current_index++
   }
 
-  while (index < next_length) {
-    const next_child = create_node(next_children[index], node)
+  while (next_index < next_length) {
+    const next_child = create_node(next_children[next_index], node)
     child_onload(next_child)
-    index++
+    next_index++
   }
 }
 
