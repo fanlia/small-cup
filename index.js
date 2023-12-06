@@ -182,6 +182,7 @@ function patch_children(node, next_children) {
       // element
       const { tag, props = {}, children } = next.data
       if (current_child.nodeType === 1 && current_child.tagName.toLowerCase() === tag.toLowerCase()) {
+        // a element and tagName is same
         const next_id = String(props.id)
         if (current_child.id && next_id) {
           // use id
